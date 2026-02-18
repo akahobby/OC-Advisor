@@ -1,0 +1,525 @@
+<Window x:Class="OcAdvisor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="OC Advisor"
+        Height="720" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource BrushBg0}"
+        Foreground="{DynamicResource BrushText0}" WindowState="Maximized" Icon="pack://application:,,,/ocadvisor.ico">
+
+    <Window.Resources>
+        <!-- Core palette -->
+        <SolidColorBrush x:Key="Bg" Color="#0F1115"/>
+        <SolidColorBrush x:Key="Fg" Color="#E7EAF0"/>
+        <SolidColorBrush x:Key="Panel" Color="#151922"/>
+        <SolidColorBrush x:Key="Panel2" Color="#1C2230"/>
+        <SolidColorBrush x:Key="Border" Color="#2A3346"/>
+        <SolidColorBrush x:Key="BorderSoft" Color="#232B3B"/>
+        <SolidColorBrush x:Key="TextDim" Color="#AEB6C6"/>
+        <SolidColorBrush x:Key="Accent" Color="#4CC9F0"/>
+
+        <!-- Controls -->
+        <Style TargetType="Border">
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="{StaticResource Panel}"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
+        <Style TargetType="Separator">
+            <Setter Property="Background" Value="{StaticResource BorderSoft}"/>
+            <Setter Property="Margin" Value="0,10,0,10"/>
+        </Style>
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Panel2}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="8"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#202035"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#25253E"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#0F1115"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="CaretBrush" Value="{StaticResource Fg}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border CornerRadius="8"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        
+        <Style TargetType="ComboBox">
+            <!-- Light selection box with readable text -->
+            <Setter Property="Background" Value="#EDEDED"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <Style TargetType="ComboBoxItem">
+            <!-- Dark dropdown -->
+            <Setter Property="Background" Value="#1C2230"/>
+            <Setter Property="Foreground" Value="#E7EAF0"/>
+            <Setter Property="Padding" Value="6"/>
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="#2A3346"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#2A3346"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+<Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!-- DataGrid -->
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="#0F1115"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RowBackground" Value="#151922"/>
+            <Setter Property="AlternatingRowBackground" Value="#1C2230"/>
+            <Setter Property="Foreground" Value="{StaticResource Fg}"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderSoft}"/>
+            <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BorderSoft}"/>
+            <Setter Property="RowHeaderWidth" Value="0"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#14141C"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderSoft}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+        <Setter Property="Foreground" Value="#FFFFFF"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="#2A2F3A"/>
+    </Style>
+
+        <!-- Color-coded section rows (subtle tint + left stripe) -->
+        <Style TargetType="DataGridRow">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridRow">
+                        <Border x:Name="RowRoot" Background="{TemplateBinding Background}">
+                            <Grid>
+<Border x:Name="Stripe" Width="4" HorizontalAlignment="Left" Background="#00000000"/>
+                                <DataGridCellsPresenter Margin="4,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Selection -->
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="RowRoot" Property="Background" Value="#1E2633"/>
+                                <Setter TargetName="Stripe" Property="Background" Value="{StaticResource Accent}"/>
+                            </Trigger>
+
+                            <!-- Hover (when not selected) -->
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsSelected" Value="False"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="RowRoot" Property="Background" Value="#1D2736"/>
+                            </MultiTrigger>
+
+                            <!-- Section tinting -->
+                            <DataTrigger Binding="{Binding Section}" Value="SYSTEM">
+                                <Setter Property="Background" Value="#14141C"/>
+                                <Setter TargetName="Stripe" Property="Background" Value="#5A5A6A"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Section}" Value="CPU">
+                                <Setter Property="Background" Value="#17131A"/>
+                                <Setter TargetName="Stripe" Property="Background" Value="#FF6B6B"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Section}" Value="MEMORY">
+                                <Setter Property="Background" Value="#121624"/>
+                                <Setter TargetName="Stripe" Property="Background" Value="#5AA9FF"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Section}" Value="GPU">
+                                <Setter Property="Background" Value="#121624"/>
+                                <Setter TargetName="Stripe" Property="Background" Value="#5AA9FF"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Section}" Value="BIOS">
+                                <Setter Property="Background" Value="#171224"/>
+                                <!-- Remove the purple left stripe; keep BIOS consistent with the app accent -->
+                                <Setter TargetName="Stripe" Property="Background" Value="{StaticResource Accent}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Section}" Value="DISPLAY">
+                                <Setter Property="Background" Value="#1A1912"/>
+                                <Setter TargetName="Stripe" Property="Background" Value="#F9C74F"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Section}" Value="STORAGE">
+                                <Setter Property="Background" Value="#121A1A"/>
+                                <Setter TargetName="Stripe" Property="Background" Value="#4DD4D4"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Section}" Value="TESTING">
+                                <Setter Property="Background" Value="#1A1218"/>
+                                <Setter TargetName="Stripe" Property="Background" Value="#FF4D9D"/>
+                            </DataTrigger>
+
+                            <!-- Hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="RowRoot" Property="Background" Value="#1E1E2D"/>
+                            </Trigger>
+                        
+                            <!-- Warning level stripe override -->
+                            <DataTrigger Binding="{Binding WarningLevel}" Value="Info">
+                                <Setter TargetName="Stripe" Property="Background" Value="#5AA9FF"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding WarningLevel}" Value="Warning">
+                                <Setter TargetName="Stripe" Property="Background" Value="#F9C74F"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding WarningLevel}" Value="Danger">
+                                <Setter TargetName="Stripe" Property="Background" Value="#FF6B6B"/>
+                            </DataTrigger>
+
+</ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+        <!-- Top bar -->
+        <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,12">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="OC Advisor" FontSize="22" FontWeight="SemiBold"/>
+                <TextBlock x:Name="TxtBuildStamp" Text="" Foreground="{StaticResource TextDim}" Margin="0,2,0,0"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                <Button x:Name="BtnGenerate" Content="Generate" Width="110" Margin="0,0,8,0" Background="{StaticResource Accent}" Foreground="#0F1115" Click="BtnGenerate_Click"/>
+                <Button x:Name="BtnRamCalc" Content="RAM Calc" Width="110" Margin="0,0,8,0" Click="BtnRamCalc_Click"/>
+                <Button x:Name="BtnCpuGpuCalc" Content="CPU/GPU Calc" Width="130" Margin="0,0,8,0" Click="BtnCpuGpuCalc_Click"/>
+                <Button x:Name="BtnCopy" Content="Copy Text" Width="110" Margin="0,0,8,0" Click="BtnCopy_Click"/>
+                <Button x:Name="BtnCopyCpu" Content="Copy CPU" Width="95" Margin="0,0,8,0" Click="BtnCopyCpu_Click"/>
+                <Button x:Name="BtnCopyRam" Content="Copy RAM" Width="95" Margin="0,0,8,0" Click="BtnCopyRam_Click"/>
+                <Button x:Name="BtnCopyGpu" Content="Copy GPU" Width="95" Margin="0,0,8,0" Click="BtnCopyGpu_Click"/>
+                <Button x:Name="BtnSaveTxt" Content="Save TXT" Width="110" Margin="0,0,8,0" Click="BtnSaveTxt_Click"/>
+                <Button x:Name="BtnSaveJson" Content="Save JSON" Width="110" Click="BtnSaveJson_Click"/>
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Main content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="360"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: detected summary -->
+            <Border Grid.Column="0" CornerRadius="12" Padding="14">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="3" Opacity="0.18"/>
+                </Border.Effect>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                    <TextBlock Text="Detected" FontWeight="SemiBold" FontSize="16" Margin="0,0,0,10"/>
+                    <TextBlock x:Name="TxtSummary" TextWrapping="Wrap"/>
+                    <Separator/>
+                    <TextBlock Text="Notes" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+                    <!-- Quick legend for row stripes / severity -->
+                    <TextBlock Text="Color legend" Foreground="{DynamicResource BrushText0}" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                            <Border Width="10" Height="10" CornerRadius="2" Background="#5AA9FF" Margin="0,2,6,0"/>
+                            <TextBlock Text="Info" Foreground="{DynamicResource BrushText0}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                            <Border Width="10" Height="10" CornerRadius="2" Background="#F9C74F" Margin="0,2,6,0"/>
+                            <TextBlock Text="Warning" Foreground="{DynamicResource BrushText0}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="10" Height="10" CornerRadius="2" Background="#FF6B6B" Margin="0,2,6,0"/>
+                            <TextBlock Text="Danger" Foreground="{DynamicResource BrushText0}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <TextBlock Text="RAM Calc: how to find inputs" Foreground="{DynamicResource BrushText0}" FontWeight="SemiBold" Margin="0,0,0,6"/>
+
+                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource BrushText0}" Opacity="0.95">
+                        <Run Text="• IC/Die: use "/>
+                        <Hyperlink NavigateUri="https://www.cpuid.com/softwares/cpu-z.html" RequestNavigate="Hyperlink_RequestNavigate">CPU‑Z</Hyperlink>
+                        <Run Text=" → SPD tab (Part Number), or "/>
+                        <Hyperlink NavigateUri="https://www.softnology.biz/files.html" RequestNavigate="Hyperlink_RequestNavigate">Thaiphoon Burner</Hyperlink>
+                        <Run Text=" for the most accurate die."/>
+                        <LineBreak/>
+                        <Run Text="• Rank: SPD sometimes shows SR/DR. If not, pick SR/DR based on kit info (2×16 GB kits are often DR)."/>
+                        <LineBreak/>
+                        <Run Text="• DIMM count: number of sticks installed (2 or 4)."/>
+                        <LineBreak/>
+                        <Run Text="• Target MT/s: your XMP/DOCP speed (e.g., DDR4‑4000 → 4000)."/>
+                        <LineBreak/>
+                        <Run Text="• WHEA check: open "/>
+                        <Hyperlink NavigateUri="eventvwr.msc" RequestNavigate="Hyperlink_RequestNavigate">Event Viewer</Hyperlink>
+                        <Run Text=" → Windows Logs → System, look for WHEA‑Logger (ID 19) after FCLK/RAM changes."/>
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button Content="Open CPU‑Z page" Width="150" Margin="0,0,8,0" Click="BtnOpenCpuZ_Click"/>
+                        <Button Content="Open Event Viewer" Width="150" Click="BtnOpenEventViewer_Click"/>
+                    </StackPanel>
+
+                    
+                    <Separator Margin="0,10,0,10"/>
+
+                    <TextBlock Text="GPU Calc: where to apply"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource BrushText0}"
+                               Margin="0,0,0,6"/>
+
+                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource BrushText0}">
+                        <Run Text="• Power Limit / Temp Limit: "/>
+                        <Run Text="MSI Afterburner main sliders."/>
+                        <LineBreak/>
+                        <Run Text="• Core Offset / Memory Offset: "/>
+                        <Run Text="MSI Afterburner core &amp; memory clock sliders (apply in small steps)."/>
+                        <LineBreak/>
+                        <Run Text="• Undervolt/Curve: "/>
+                        <Run Text="use Afterburner "/>
+                        <Hyperlink NavigateUri="https://www.msi.com/Landing/afterburner" Foreground="#6EA8FF"
+                                   RequestNavigate="Hyperlink_RequestNavigate">Curve Editor (Ctrl+F)</Hyperlink>
+                        <Run Text=" to set a stable frequency at lower voltage."/>
+                        <LineBreak/>
+                        <Run Text="• Fan curve: "/>
+                        <Run Text="Settings → Fan tab (automatic curve). Keep temps stable to keep clocks stable."/>
+                    </TextBlock>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button Content="Open MSI Afterburner" Width="180" Click="BtnOpenAfterburner_Click"/>
+                    </StackPanel>
+
+                    
+                    <Separator/>
+
+                    <!-- Disclaimer moved from main grid -->
+                    <Border CornerRadius="10"
+                            Padding="10"
+                            Background="{StaticResource Panel}"
+                            BorderBrush="{StaticResource Border}"
+                            BorderThickness="1"
+                            Margin="0,6,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Disclaimer" FontWeight="SemiBold" Margin="0,0,0,8"/>
+
+                            <ItemsControl x:Name="DisclaimerItems">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock TextWrapping="Wrap" Margin="0,2,0,2">
+                                            <Run Text="• "/>
+                                            <Run Text="{Binding Title}" FontWeight="SemiBold"/>
+                                            <Run Text=" — "/>
+                                            <Run Text="{Binding Reason}" Foreground="{StaticResource TextDim}"/>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+<Separator/>
+                    <TextBlock Text="These are educated starting points. Validate changes one at a time."
+                               TextWrapping="Wrap" Foreground="{DynamicResource BrushText0}"/>
+                </StackPanel>
+            </ScrollViewer>
+            </Border>
+
+            <!-- Right: recommendations table -->
+            <Border Grid.Column="2" CornerRadius="12" Padding="14">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="18" ShadowDepth="3" Opacity="0.18"/>
+                </Border.Effect>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Section toggles -->
+                    <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,10">
+                        <TextBlock Text="Sections" Foreground="{DynamicResource BrushText0}" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!-- Assumptions (affects confidence/risk + a few heuristics) -->
+                    <Border Grid.Row="1" CornerRadius="10" Background="{StaticResource Panel}" BorderBrush="{StaticResource BorderSoft}" BorderThickness="1" Padding="10" Margin="0,0,0,12">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel>
+                                <TextBlock Text="Assumptions" FontWeight="SemiBold" Foreground="{DynamicResource BrushText0}"/>
+                                <TextBlock Text="Used for confidence scoring and sanity checks (does not auto-apply changes)."
+                                           Foreground="{StaticResource TextDim}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                                <StackPanel Margin="0,0,10,0">
+                                    <TextBlock Text="Cooling" Foreground="{StaticResource TextDim}" Margin="2,0,0,4"/>
+                                    <ComboBox x:Name="CoolingTypeBox" Width="160" Height="32" SelectionChanged="Assumptions_Changed">
+                                        <sys:String>Air Cooler</sys:String>
+                                        <sys:String>240mm AIO</sys:String>
+                                        <sys:String>360mm AIO</sys:String>
+                                        <sys:String>Custom Loop</sys:String>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <StackPanel Margin="0,0,10,0">
+                                    <TextBlock Text="Silicon" Foreground="{StaticResource TextDim}" Margin="2,0,0,4"/>
+                                    <ComboBox x:Name="SiliconQualityBox" Width="160" Height="32" SelectionChanged="Assumptions_Changed">
+                                        <sys:String>Conservative</sys:String>
+                                        <sys:String>Average</sys:String>
+                                        <sys:String>Above Average</sys:String>
+                                        <sys:String>Golden Sample</sys:String>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                
+
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+<DataGrid x:Name="GridRecs"
+                              Grid.Row="2"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="None"
+                              AlternationCount="2"
+                              RowBackground="#151922"
+                              AlternatingRowBackground="#141926"
+                              BorderBrush="{StaticResource Border}"
+                              BorderThickness="1"
+                              RowHeight="32"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <DataGrid.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="GroupItem">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="GroupItem">
+                                                    <Expander IsExpanded="True" Loaded="GroupExpander_Loaded" Expanded="GroupExpander_Expanded" Collapsed="GroupExpander_Collapsed" Margin="0,0,0,6" Background="#00000000">
+                                                        <Expander.Header>
+    <Border CornerRadius="10"
+            Background="{StaticResource Panel}"
+            BorderBrush="{StaticResource BorderSoft}"
+            BorderThickness="1"
+            Padding="10,8">
+        <DockPanel LastChildFill="False">
+            <TextBlock Text="{Binding Name}"
+                       Foreground="{DynamicResource BrushText0}"
+                       FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding ItemCount, StringFormat='({0})'}"
+                       Foreground="{DynamicResource BrushText0}"
+                       Margin="8,0,0,0"/>
+        </DockPanel>
+    </Border>
+</Expander.Header>
+                                                        <ItemsPresenter/>
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </DataGrid.GroupStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Section" Binding="{Binding Section}" Width="120"/>
+                            <DataGridTextColumn Header="Setting" Binding="{Binding Setting}" Width="220"/>
+                            <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="260"/>
+                            <DataGridTextColumn Header="Path" Binding="{Binding Path}" Width="260"/>
+                            <DataGridTextColumn Header="Reason" Binding="{Binding Reason}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+        <!-- Footer -->
+        <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,10,0,0">
+            <TextBlock Text="Made by akahobby" Foreground="{StaticResource TextDim}" FontSize="11" Opacity="0.75"/>
+            <TextBlock Text="{Binding ElementName=TxtBuildStamp, Path=Text}" Foreground="{StaticResource TextDim}" FontSize="11" Opacity="0.75" DockPanel.Dock="Right"/>
+        </DockPanel>
+
+</Grid>
+</Window>
