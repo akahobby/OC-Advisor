@@ -94,6 +94,24 @@ This method:
 - No system changes are automatically applied by this application.  
 - Overclocking adjustments must be applied manually via BIOS or tuning software.  
 
+## Git Commit Hygiene (No AI Fingerprints)
+
+This repo includes optional local tooling to prevent AI-signature text from appearing in commit messages.
+
+Install local hooks:
+
+```bash
+./scripts/install-git-hooks.sh
+```
+
+Run an audit against commit history and tracked files:
+
+```bash
+./scripts/audit-ai-fingerprints.sh
+```
+
+If the audit reports matches, remove those phrases from commit messages/files before publishing.
+
 ## Disclaimer
 
 Overclocking carries risk. You are responsible for changes made to your system.
